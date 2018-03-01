@@ -1,0 +1,26 @@
+{ 
+      "left":{ 
+         "left":{ 
+            "op":10,
+            "column":"custom_info.CMDB.ApplicationName",
+            "type":"LEAF",
+            "value":"PETRELPRODUCTION"
+         },
+         "oper":"AND",
+         "right":{ 
+            "op":1,
+            "column":"state",
+            "type":"LEAF",
+            "value":9
+         },
+         "type":"BRANCH"
+      },
+      "oper":"AND",
+      "right":{ 
+         "op":1,
+         "column":"severity",
+         "type":"LEAF",
+         "value":0
+      },
+      "type":"BRANCH"
+   }
