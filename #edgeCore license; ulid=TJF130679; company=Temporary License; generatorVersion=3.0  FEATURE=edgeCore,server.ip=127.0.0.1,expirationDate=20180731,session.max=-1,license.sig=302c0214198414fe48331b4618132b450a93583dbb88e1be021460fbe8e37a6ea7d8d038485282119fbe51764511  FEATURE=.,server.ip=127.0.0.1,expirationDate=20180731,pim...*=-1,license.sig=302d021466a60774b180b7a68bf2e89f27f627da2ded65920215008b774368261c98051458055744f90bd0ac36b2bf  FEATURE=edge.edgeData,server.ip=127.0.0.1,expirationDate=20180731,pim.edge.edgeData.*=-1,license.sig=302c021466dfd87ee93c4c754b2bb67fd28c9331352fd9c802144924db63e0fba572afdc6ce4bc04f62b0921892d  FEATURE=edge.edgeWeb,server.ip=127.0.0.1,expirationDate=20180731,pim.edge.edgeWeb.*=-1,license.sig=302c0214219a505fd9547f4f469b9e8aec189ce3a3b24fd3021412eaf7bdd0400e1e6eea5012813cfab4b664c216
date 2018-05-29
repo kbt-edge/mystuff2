@@ -1,9 +1,0 @@
-#edgeCore license; ulid=TJF130679; company=Temporary License; generatorVersion=3.0
-
-FEATURE=edgeCore,server.ip=127.0.0.1,expirationDate=20180731,session.max=-1,license.sig=302c0214198414fe48331b4618132b450a93583dbb88e1be021460fbe8e37a6ea7d8d038485282119fbe51764511
-
-FEATURE=.,server.ip=127.0.0.1,expirationDate=20180731,pim...*=-1,license.sig=302d021466a60774b180b7a68bf2e89f27f627da2ded65920215008b774368261c98051458055744f90bd0ac36b2bf
-
-FEATURE=edge.edgeData,server.ip=127.0.0.1,expirationDate=20180731,pim.edge.edgeData.*=-1,license.sig=302c021466dfd87ee93c4c754b2bb67fd28c9331352fd9c802144924db63e0fba572afdc6ce4bc04f62b0921892d
-
-FEATURE=edge.edgeWeb,server.ip=127.0.0.1,expirationDate=20180731,pim.edge.edgeWeb.*=-1,license.sig=302c0214219a505fd9547f4f469b9e8aec189ce3a3b24fd3021412eaf7bdd0400e1e6eea5012813cfab4b664c216
