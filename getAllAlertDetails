@@ -5,7 +5,7 @@ var ResultStatusCodeDO = Java.type("edge.server.pipeline.data.document.ResultSta
 var pageFeedName = "getAlertDetails";
 var countFeedIndex = 0;
 var pageFeedIndex = 1;
-var alertIdPageVar = "alert_id";
+var alertIdPageVar = "alertid";
 var maxPageRetries = 3;
 
 function main(sourceBundles, outputBundle, jsNodeVars, jsSecVars) {
@@ -21,14 +21,14 @@ function main(sourceBundles, outputBundle, jsNodeVars, jsSecVars) {
   outputRs.copyColumnMappingFrom( sourceRs );
   
   for (var i = 0; i < AlertIDs.length; i++) {
-    var AlertID = AlertIDs[i].getValue("alert_id");
+    var AlertID = AlertIDs[i].getValue("alertids");
     var pageNodeVars = getNodeVars(javaNodeVars, alertIdPageVar, AlertID);
     var pageSuccess = false;
     var pageResults;
     for (var trial = 1; !pageSuccess && trial <= maxPageRetries; trial++) {
       try {
-      	pageResults = dataProducerService.fetch(pageFeedName, pageNodeVars, javaSecVars);
-      	if (pageResults.getResultStatusCode() === ResultStatusCodeDO.CURRENT) {
+              pageResults = dataProducerService.fetch(pageFeedName, pageNodeVars, javaSecVars);
+              if (pageResults.getResultStatusCode() === ResultStatusCodeDO.CURRENT) {
           pageSuccess = true;
         }
       } catch (err) {
@@ -51,7 +51,40 @@ function fetchAttributeDefs(sourceProducers, nodeVar, secVar, transformName, out
   var outputDefs = outputBundle.getDataDef().getDataAttributes();
   
   var producer = sourceProducers.get(pageFeedIndex);
-  var sourceDefs = producer.getAttributeDefs(nodeVar._asJavaCollection(), secVar._asJavaCollection());
+  //var sourceDefs = producer.getAttributeDefs(nodeVar._asJavaCollection(), secVar._asJavaCollection());
+  var sourceDefs = producer.getAttributeDefs(null, secVar._asJavaCollection());
+  var indexOutputAttr = getIndexedAttributeDefs(sourceDefs);
+  
+  if (!('custom_info_CMDB_ApplicationName' in indexOutputAttr)) { 
+    print( "custom_info_CMDB_ApplicationName missing");
+    addNextAttribute(outputDefs, new DataAttributeDO(transformName, DataAttributeTypeDO.STRING, "custom_info_CMDB_ApplicationName"));
+  }
+  if (!('custom_info_CMDB_Site_Medal' in indexOutputAttr)) { 
+    print( "custom_info_CMDB_Site_Medal missing"); 
+    addNextAttribute(outputDefs, new DataAttributeDO(transformName, DataAttributeTypeDO.STRING, "custom_info_CMDB_Site_Medal"));
+  }
+  if (!('custom_info_ITSM_SupportGroup' in indexOutputAttr)) { 
+    print( "custom_info_ITSM_SupportGroup missing"); 
+    addNextAttribute(outputDefs, new DataAttributeDO(transformName, DataAttributeTypeDO.STRING, "custom_info_ITSM_SupportGroup"));
+  }
+  if (!('custom_info_ITSM_TicketNumber' in indexOutputAttr)) { 
+    print( "custom_info_ITSM_TicketNumber missing"); 
+    addNextAttribute(outputDefs, new DataAttributeDO(transformName, DataAttributeTypeDO.STRING, "custom_info_ITSM_TicketNumber"));
+  }
+  if (!('custom_info_Naming_Site_Name' in indexOutputAttr)) { 
+    print( "custom_info_Naming_Site_Name missing"); 
+    addNextAttribute(outputDefs, new DataAttributeDO(transformName, DataAttributeTypeDO.STRING, "custom_info_Naming_Site_Name"));
+  }
+  if (!('custom_info_Naming_siteCode' in indexOutputAttr)) { 
+    print( "custom_info_Naming_siteCode missing"); 
+    addNextAttribute(outputDefs, new DataAttributeDO(transformName, DataAttributeTypeDO.STRING, "custom_info_Naming_siteCode"));
+  }
+  if (!('custom_info_OpenNMS_UEI' in indexOutputAttr)) { 
+    print( "custom_info_OpenNMS_UEI missing"); 
+    addNextAttribute(outputDefs, new DataAttributeDO(transformName, DataAttributeTypeDO.STRING, "custom_info_OpenNMS_UEI"));
+  }
+  
+  
   CloneUtil.cloneCollection(DataAttributeDO.class, outputDefs, sourceDefs);
   
   for each (var attributeDef in outputDefs) {
@@ -59,6 +92,24 @@ function fetchAttributeDefs(sourceProducers, nodeVar, secVar, transformName, out
   }
 }
 
+function getIndexedAttributeDefs( bundle ) {
+    var indexedAttributesDef = {};
+    //var attributeDefSet = bundle.getDataDef().getDataAttributes();
+  var attributeDefSet = bundle;
+    for (var it = attributeDefSet.iterator(); it.hasNext(); ) {
+        var attributeDef = it.next();
+        print("Adding:  " + attributeDef.getName());
+        indexedAttributesDef[attributeDef.getName()] = attributeDef;
+    }
+
+    return indexedAttributesDef;
+}
+
+function addNextAttribute(defList, def) {
+  def.setOrdinalPosition(defList.size());
+  defList.add(def);
+}
+                                       
 function getNodeVars(incomingNodeVars, alertIdPageVar, AlertID) {
   var nodeVars = new ArrayList(3);
   
